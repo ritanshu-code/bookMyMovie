@@ -17,7 +17,7 @@ export const useLoadUser = () => {
                 if (!res.ok) {
                     throw new Error(data.error);
                 }
-                console.log(data);
+                
                 
                 setUser(data);
                 setAuth(true);
