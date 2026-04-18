@@ -1,6 +1,8 @@
+import { connectDB } from "@/lib/connectDB";
 import { getAllTheaters, getTheatersByState } from "@/services/theaterService";
 
 export async function GET(request) {
+     await connectDB();
     const { searchParams } = new URL(request.url);
     const state = searchParams.get("state");
     try {

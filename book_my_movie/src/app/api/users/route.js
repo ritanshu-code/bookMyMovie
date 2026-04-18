@@ -1,8 +1,8 @@
 import { connectDB } from "@/lib/connectDB";
 import * as userService from "../../../services/userService"
-connectDB();
 
 export async function POST(req) {
+    await connectDB();
     try {
         const {name, phone, id} = await req.json();
         if (!name || !phone ) {

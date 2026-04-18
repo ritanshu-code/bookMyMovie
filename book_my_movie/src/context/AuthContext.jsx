@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
     const sendOtpRequest = async ({ email, onNext, setLoading }) => {
         setLoading(true);
         try {
-            const res = await fetch("http://localhost:3000/api/auth/sendOTP", {
+            const res = await fetch("/api/auth/sendOTP", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
                 throw new Error("No OTP request found");
             }
 
-            const res = await fetch("http://localhost:3000/api/auth/verifyOTP", {
+            const res = await fetch("/api/auth/verifyOTP", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -95,7 +95,7 @@ export const AuthProvider = ({ children }) => {
         const id = user?._id;
         const requestData = { name, phone, id };
         try {
-            const res = await fetch("http://localhost:3000/api/users", {
+            const res = await fetch("/api/users", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -116,7 +116,7 @@ export const AuthProvider = ({ children }) => {
 
     const logoutRequest = async () => {
         try {
-            const res = await fetch("http://localhost:3000/api/auth/logout", {
+            const res = await fetch("/api/auth/logout", {
                 method: "DELETE",
             });
             const data = await res.json();

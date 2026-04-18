@@ -1,6 +1,8 @@
+import { connectDB } from "@/lib/connectDB";
 import { getShowById } from "@/services/showService";
 
 export async function GET(req, { params }) {
+   await connectDB();
   try {
     const { showId } = await params;
 

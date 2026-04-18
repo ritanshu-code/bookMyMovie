@@ -3,10 +3,10 @@ import { connectDB } from "@/lib/connectDB";
 import { cookies } from "next/headers";
 import * as tokenService from "@/services/auth/tokenService";
 
-connectDB();
 
 
 export async function GET() {
+  await connectDB();
   try {
     const cookieStore = await cookies(); //  FIX
     const accessToken = cookieStore.get("accessToken")?.value;
