@@ -6,8 +6,13 @@ const { registerSocketHandlers } = require("./socket/socketHandlers");
 
 const app = express();
 
+const allowedOrigins = [
+    "http://localhost:3000",
+    "https://book-my-movie-3z7mlnrlc-ritanshu-codes-projects.vercel.app/"
+];
+
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: allowedOrigins,
     credentials: true,
 }));
 
@@ -15,7 +20,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: allowedOrigins,
         methods: ["GET", "POST"],
         credentials: true,
     },
@@ -29,6 +34,9 @@ io.on("connection", (socket) => {
     });
 });
 
-server.listen(5000, () => {
-    console.log("Socket server running on port 5000");
+const PORT = process.env.PORT || 5000;
+
+
+server.listen(PORT, () => {
+    console.log(`Socket server running on port ${PORT}`);
 });
