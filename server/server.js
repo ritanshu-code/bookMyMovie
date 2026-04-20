@@ -8,7 +8,7 @@ const app = express();
 
 const allowedOrigins = [
     "http://localhost:3000",
-    "https://book-my-movie-3z7mlnrlc-ritanshu-codes-projects.vercel.app/"
+    /\.vercel\.app$/
 ];
 
 app.use(cors({
