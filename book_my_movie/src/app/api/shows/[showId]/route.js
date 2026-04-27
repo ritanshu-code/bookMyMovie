@@ -7,7 +7,7 @@ export async function GET(req, { params }) {
     const { showId } = await params;
 
     const showData = await getShowById(showId);
-    console.log(showData);
+    
     
 
     return new Response(JSON.stringify(showData), { status: 200 });

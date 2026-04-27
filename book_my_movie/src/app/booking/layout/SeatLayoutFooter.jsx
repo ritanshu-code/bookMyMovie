@@ -1,18 +1,25 @@
 "use client"
+import SignInModel from '@/components/auth/SignInModal';
 import { useAuth } from '@/context/AuthContext';
 import { useSeatContext } from '@/context/SeatContext';
 import { socket } from '@/utils/socket';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React from 'react'
 
 export default function SeatLayoutFooter({showData , location}) {
-    const {user} = useAuth();
-    console.log(user);
+    const {user, toggleModal} = useAuth();
+    const router = useRouter();
     
     const showId = showData?._id;
     const {isSelectedSeats, selectedSeats} = useSeatContext();
     const handleClickProceed = () => {
         console.log("Clicked");
+        
+        // If user is not signed in, open SignIn modal
+        if (!user) {
+            toggleModal();
+            return;
+        }
         
         // send lock request to socket.io server
         socket.emit("lock-seats", {
@@ -20,6 +27,9 @@ export default function SeatLayoutFooter({showData , location}) {
             seatIds: selectedSeats,
             userId: user?._id,
         })
+        
+        // Navigate to checkout page
+        router.push(`/booking/shows/${showId}/${location}/checkout`);
     }
   return (
     <>
@@ -28,13 +38,11 @@ export default function SeatLayoutFooter({showData , location}) {
 
             <div className='bg-white py-3 px-6 flex items-center justify-between z-10'>
                 <p className='text-gray-700 font-medium text-base'>You have {selectedSeats.length} Selected</p>
-                <Link href={`/booking/shows/${showId}/${location}/checkout`}>
                     <button 
                     onClick={handleClickProceed}
                     className='bg-black cursor-pointer text-white px-6 py-2 rounded-lg font-semibold'>
                         Proceed
                     </button>
-                </Link>
             </div>
             </div>
         ) : (
@@ -62,7 +70,7 @@ export default function SeatLayoutFooter({showData , location}) {
         </div>
     </div>
         )}
-        
+        <SignInModel/>
     </>
     
   )

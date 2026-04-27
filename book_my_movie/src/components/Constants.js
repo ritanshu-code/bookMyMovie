@@ -1,3 +1,9 @@
+import e1 from "../../public/events/e1.avif";
+import e2 from "../../public/events/e2.avif";
+import e3 from "../../public/events/e3.avif";
+import e4 from "../../public/events/e4.avif";
+import e5 from "../../public/events/e5.avif";
+
 const languages = ["English", "Hindi", "Tamil", "Telugu", "Kannada", "Malayalam", "Bengali", "Marathi"];
 
 const movies = [
@@ -29,4 +35,31 @@ const movies = [
         
     ]
 
-export { languages, movies };
+const events = [
+    {
+        src: e1,
+        title: "Event 1",
+        genre: "Music"
+    },
+    {
+        src: e2,
+        title: "Event 2",
+        genre: "Music"
+    },
+    {
+        src: e3,
+        title: "Event 3",
+        genre: "Music"
+    },
+    {
+        src: e4,
+        title: "Event 4",
+        genre: "Music"
+    },
+    {
+        src: e5,
+        title: "Event 5",
+        genre: "Music"
+    },
+]
+export { languages, movies, events };

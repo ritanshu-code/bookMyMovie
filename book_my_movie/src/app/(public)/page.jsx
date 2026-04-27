@@ -5,6 +5,7 @@ import RecommendedMovies from '@/components/movie/RecommendedMovies';
 import { useLoadUser } from '@/hooks/useLoadUser';
 import FullScreenLoader from '@/components/ui/FullScreenLoader';
 import { useEffect, useState } from 'react';
+import LiveEvents from '@/components/ui/LiveEvents';
 
 
 
@@ -44,6 +45,7 @@ export default function Page() {
                         
             <MovieSlider />
             <RecommendedMovies movies={movies} />
+            <LiveEvents/>
         </div>
     )
 }

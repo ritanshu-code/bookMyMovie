@@ -13,7 +13,6 @@ export default async function page(props) {
 
   const showData = await getShowById(showId)
   const safeData = JSON.parse(JSON.stringify(showData));
-  console.log("SHOWDATA:::", showData);
   
 
 

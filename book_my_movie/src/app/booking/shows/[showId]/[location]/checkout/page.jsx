@@ -26,7 +26,7 @@ function loadScript(src) {
   })
 }
 
-export default function page() {
+export default function checkOutPage() {
 
   const [showData, setShowData] = useState(null);
   const params = useParams();

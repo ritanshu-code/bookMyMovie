@@ -16,6 +16,8 @@ export async function GET(req) {
 
 
         const shows = await getShowsByMovieDateLocation(movieId, date, location)
+        console.log("shows", shows);
+        
 
 
 

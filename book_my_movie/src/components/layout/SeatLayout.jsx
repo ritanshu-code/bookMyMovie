@@ -42,7 +42,6 @@ export default function SeatLayout({ showData, showId }) {
         )
     }
 
-    setIsSelectedSeats(selectedSeats.length > 0);
     // soket code starts
 
     useEffect(()=>{
@@ -68,6 +67,12 @@ export default function SeatLayout({ showData, showId }) {
                 
             } )
     }, [showId])
+
+    // Update isSelectedSeats whenever selectedSeats changes
+    useEffect(()=>{
+        setIsSelectedSeats(selectedSeats.length > 0);
+    }, [selectedSeats, setIsSelectedSeats])
+    
     console.log("locked seats:",lockedSeats);
     
 

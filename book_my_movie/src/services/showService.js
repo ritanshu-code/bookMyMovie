@@ -4,6 +4,7 @@ import { TheaterModel } from "@/models/theater";
 import { generateSeatLayout } from "@/utils";
 import { Types } from "mongoose";
 import mongoose from "mongoose";
+import { connectDB } from "@/lib/connectDB";
 
 // create show
 
@@ -33,6 +34,7 @@ export async function getShowsByMovieDateLocation(movieId, date, location) {
 
 // get show by id
 export async function getShowById(showId) {
+    await connectDB();
     return await ShowModel.findById(showId).populate("movie theatre").lean();
 }
 

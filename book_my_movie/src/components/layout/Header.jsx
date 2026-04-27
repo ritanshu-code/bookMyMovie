@@ -4,6 +4,7 @@ import SignInModel from '../auth/SignInModal';
 import { useAuth } from '@/context/AuthContext';
 import { FaUser } from "react-icons/fa";
 import mainIcon from "../../../public/headerAssets/mainIcon.png";
+import Link from 'next/link';
 
 export default function Header() {
     const {toggleModal, auth, user} = useAuth();
@@ -14,6 +15,7 @@ export default function Header() {
             {/* left side */}
             <div className='flex gap-8 items-center'>
                 {/* logo */}
+                <Link href={"/"} >
                 <div className='relative w-[140px] h-[40px] items-center'>
                 <Image
                 src={mainIcon}
@@ -21,6 +23,7 @@ export default function Header() {
                 fill
                 />
                 </div>
+                </Link>
                 {/* search bar  */}
                 <div>
                     <input type="text" className='w-lg h-2 p-4' placeholder='Search for movies, Events, Plays and activities' />

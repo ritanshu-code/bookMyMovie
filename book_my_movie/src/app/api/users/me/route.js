@@ -11,7 +11,7 @@ export async function GET() {
     const cookieStore = await cookies(); //  FIX
     const accessToken = cookieStore.get("accessToken")?.value;
 
-    console.log("Accesstoken hit:::::::", accessToken);
+    
 
     if (!accessToken) {
       return new Response(

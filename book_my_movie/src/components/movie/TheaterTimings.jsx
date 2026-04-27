@@ -7,7 +7,7 @@ import Link from "next/link"
 export default function TheaterTimings({ movieId }) {
   const today = dayjs()
   const formattedDate = today.format("DD-MM-YYYY")
-  const formattedDate2 = "27-02-2026"
+  const formattedDate2 = "22-04-2026"
 
   const [selectedDate, setSelectedDate] = useState(today)
 
@@ -26,7 +26,23 @@ export default function TheaterTimings({ movieId }) {
     fetchShows()
   }, [movieId])
 
-  console.log("shows::", shows)
+  
+
+  const groupedShows = shows.reduce((acc, show) => {
+    const theatreId = show.theatre?._id;
+    if (!theatreId) return acc;
+
+    if (!acc[theatreId]) {
+      acc[theatreId] = {
+        theatre: show.theatre,
+        shows: [],
+      };
+    }
+
+    acc[theatreId].shows.push(show);
+
+    return acc;
+  }, {});
 
 
   const next7Days = Array.from({ length: 7 }, (_, i) => today.add(i, "day"))
@@ -51,27 +67,22 @@ export default function TheaterTimings({ movieId }) {
       </div>
       {/* Theaters */}
       <div>
-        {shows.map((show) => {
-          if (!show.theatre?._id) return null
+        {Object.values(groupedShows).map((group) => {
+          const { theatre, shows } = group;
 
-          const theaterId = show.theatre._id
-          const movieName = encodeURIComponent(show.movie?.title || "movie")
-          const location = "Delhi"
-          const movieId = show.movie?._id || "movieId"
-          console.log("movieId ", movieId);
-          
           return (
-            <div key={show._id}>
+            <div key={theatre._id} className="mb-6">
+
               {/* Theater Info */}
               <div className="flex items-start gap-3 mb-2 px-3">
                 <img
-                  src={show.theatre.logo || "/default-logo.png"}
-                  alt={show.theatre.name || "Theater"}
+                  src={theatre.logo || "/default-logo.png"}
+                  alt={theatre.name}
                   className="w-8 h-8 object-contain"
                 />
                 <div>
                   <p className="font-semibold text-gray-900">
-                    {show.theatre.name}
+                    {theatre.name}
                   </p>
                   <p className="text-sm text-gray-500">
                     Allows Cancellation
@@ -79,25 +90,34 @@ export default function TheaterTimings({ movieId }) {
                 </div>
               </div>
 
-              {/* Show Timing */}
-              <div className="flex flex-wrap gap-3 ml-11 mb-6">
-                <Link
-                  href={`/booking/${movieId}/${movieName}/${location}/theater/${theaterId}/show/${show._id}/seat-layout`}
-                >
-                  <button className="border cursor-pointer p-2 hover:bg-gray-100 border-gray-300 rounded-lg">
-                    <div className="flex flex-col gap-2">
-                      <span className="leading-tight font-semibold">
-                        {show.startTime}
-                      </span>
-                      <span className="text-[10px] text-gray-500 font-black">
-                        {show.audioType?.toUpperCase()}
-                      </span>
-                    </div>
-                  </button>
-                </Link>
+              {/* Show Timings */}
+              <div className="flex flex-wrap gap-3 ml-11">
+                {shows.map((show) => {
+                  const movieName = encodeURIComponent(show.movie?.title || "movie");
+                  const location = "Delhi";
+                  const movieId = show.movie?._id;
+
+                  return (
+                    <Link
+                      key={show._id}
+                      href={`/booking/${movieId}/${movieName}/${location}/theater/${theatre._id}/show/${show._id}/seat-layout`}
+                    >
+                      <button className="border cursor-pointer p-2 hover:bg-gray-100 border-gray-300 rounded-lg">
+                        <div className="flex flex-col gap-2">
+                          <span className="leading-tight font-semibold">
+                            {show.startTime}
+                          </span>
+                          <span className="text-[10px] text-gray-500 font-black">
+                            {show.audioType?.toUpperCase()}
+                          </span>
+                        </div>
+                      </button>
+                    </Link>
+                  );
+                })}
               </div>
             </div>
-          )
+          );
         })}
       </div>
     </>
