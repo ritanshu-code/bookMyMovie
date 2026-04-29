@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import m5 from "../../../../../../../public/recommendedMoviesAssets/m5.avif"
 import Image from 'next/image';
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import dayjs from 'dayjs';
 import { calculateTotalPrice, groupSeatsByType, razorpayScript } from '../../../../../../utils/constants';
 import { FaInfoCircle } from "react-icons/fa";
@@ -11,6 +11,10 @@ import { BiSolidOffer } from "react-icons/bi";
 import { CiCircleQuestion, CiUser } from "react-icons/ci";
 import { useAuth } from '@/context/AuthContext';
 import { useSeatContext } from '@/context/SeatContext';
+import { socket } from '@/utils/socket';
+import CheckoutHeader from '@/components/layout/CheckoutHeader';
+
+const IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
 
 function loadScript(src) {
   return new Promise((resolve) => {
@@ -27,6 +31,31 @@ function loadScript(src) {
 }
 
 export default function checkOutPage() {
+  const Router = useRouter();
+
+  const [timeLeft, setTimeLeft] = useState(300); //  5 min in seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+
+          // unlock seats
+          socket.emit("unlock-seats", {
+            showId: showId,
+            userId: user?.id,
+          })
+          alert("Time expired! Redirecting to home page.");
+          Router.push("/");
+
+          return 0;
+        }
+        return prev - 1;
+      })
+    }, 1000)
+    return () => clearInterval(interval);
+  }, [])
+
 
   const [showData, setShowData] = useState(null);
   const params = useParams();
@@ -71,6 +100,8 @@ export default function checkOutPage() {
         razorpay_payment_id: response.razorpay_payment_id,
         razorpay_signature: response.razorpay_signature,
       };
+      console.log("paymentData", paymentData);
+
       const verifyResponse = await fetch("/api/payment/verifyPayment", {
         method: "POST",
         headers: {
@@ -79,10 +110,40 @@ export default function checkOutPage() {
         body: JSON.stringify(paymentData)
       });
       const verifyResult = await verifyResponse.json();
+      console.log(verifyResult);
+
 
       return verifyResult.success;
     } catch (error) {
       console.error("Payment verification failed:", error);
+    }
+  }
+
+  const handleBookingSuccess = async (bookingData) => {
+    try {
+
+      const response = await fetch("/api/bookings/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "userId": user._id
+        },
+        body: JSON.stringify(bookingData)
+      });
+      const bookingResult = await response.json();
+      console.log('bookingResult from backend api', bookingResult);
+      // unlock seats
+      socket.emit("unlock-seats", {
+        showId: showId,
+        userId: user._id,
+        seatIds: selectedSeats
+      })
+
+
+      return bookingResult;
+
+    } catch (error) {
+      console.error("Booking failed:", error);
     }
   }
 
@@ -107,8 +168,7 @@ export default function checkOutPage() {
           body: JSON.stringify(reqData)
         });
         const orderData = await response.json();
-        console.log();
-        
+
         const options = {
           key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
           amount: orderData.amount,
@@ -118,7 +178,32 @@ export default function checkOutPage() {
           order_id: orderData.id,
           handler: async function (response) {
             console.log(response);
-            // const success = await handlePaymentSuccess(response);
+            const success = await handlePaymentSuccess(response);
+            if (!success) {
+              alert("Payment verification failed.");
+              return;
+            }
+            const bookingData = {
+              showId: showId,
+              seats: selectedSeats,
+              paymentId: response.razorpay_payment_id,
+              bookingFee: {
+                ticketPrice: base,
+                total: total,
+                convenience: tax,
+              }
+            }
+
+            const bookingResult = await handleBookingSuccess(bookingData);
+
+            if (bookingResult?.success) {
+              alert("Booking successful!");
+              console.log("bookingResult", bookingResult);
+
+              // Optionally, redirect to a confirmation page
+            } else {
+              alert("Booking failed. ");
+            }
 
 
           },
@@ -151,8 +236,12 @@ export default function checkOutPage() {
 
   return (
     <div className="min-h-screen w-full bg-white">
+      <CheckoutHeader />
 
       <div className="max-w-6xl mx-auto px-4 py-6">
+        <p className="text-red-500 text-center mb-3 text-lg border rounded-[14px] border-dashed py-2 font-semibold">
+          Time left to complete booking: {Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, "0")}
+        </p>
         <div className="flex flex-col lg:flex-row gap-6">
 
           {/* Left Section */}
@@ -161,7 +250,7 @@ export default function checkOutPage() {
             {/* Movie Details */}
             <div className="flex gap-4">
               <Image
-                src={m5}
+                src={`${IMAGE_BASE}${showData?.movie.poster_path}`}
                 alt={showData?.movie.poster_path
                 }
                 width={100}

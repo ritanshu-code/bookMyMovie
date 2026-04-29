@@ -1,4 +1,6 @@
-export const tabs = ["profile", "Your orders"]
+import { customAlphabet } from "nanoid";
+
+export const tabs = ["Profile", "Your Orders"]
 
 export const razorpayScript = "https://checkout.razorpay.com/v1/checkout.js"
 
@@ -51,3 +53,9 @@ export const calculateTotalPrice = (seats) => {
 
   return { base, tax, total };
 };
+
+const nanoid = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 8);
+
+export const generateBookingRef = () => {
+  return `BMM-${nanoid()}`;
+}

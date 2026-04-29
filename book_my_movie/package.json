@@ -23,6 +23,7 @@
     "lucide-react": "^0.563.0",
     "mailgen": "^2.0.32",
     "mongoose": "^9.2.1",
+    "nanoid": "^5.1.9",
     "next": "16.1.4",
     "nodemailer": "^8.0.3",
     "razorpay": "^2.9.6",

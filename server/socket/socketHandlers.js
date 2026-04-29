@@ -68,7 +68,7 @@ export const registerSocketHandlers = (socket, io) => {
 
             //store seat lock with ttl
             // ttl = 5 mins = 300 seconds
-            await redis.setex(seatLockKey, 10, userId);
+            await redis.setex(seatLockKey, 300, userId);
 
             // add seat to the locked seats set for the show
             await redis.sadd(lockedSeatsKeys, seatId);
