@@ -34,37 +34,37 @@ export default function SeatLayoutFooter({showData , location}) {
   return (
     <>
         {isSelectedSeats ? (
-            <div className='fixed bottom-0 left-0 w-full h-[100px] bg-white border-t border-gray-200 py-4'>
+            <div className='fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 py-2 sm:py-3 md:py-4'>
 
-            <div className='bg-white py-3 px-6 flex items-center justify-between z-10'>
-                <p className='text-gray-700 font-medium text-base'>You have {selectedSeats.length} Selected</p>
+            <div className='bg-white py-2 sm:py-3 md:py-4 px-2 sm:px-4 md:px-6 flex flex-col sm:flex-row sm:items-center sm:justify-between z-10 gap-2 sm:gap-4'>
+                <p className='text-xs sm:text-sm md:text-base text-gray-700 font-medium'>You have {selectedSeats.length} Seat{selectedSeats.length !== 1 ? 's' : ''} Selected</p>
                     <button 
                     onClick={handleClickProceed}
-                    className='bg-black cursor-pointer text-white px-6 py-2 rounded-lg font-semibold'>
+                    className='bg-black cursor-pointer text-white px-4 sm:px-6 md:px-8 py-2 md:py-2.5 rounded-lg font-semibold text-xs sm:text-sm md:text-base'>
                         Proceed
                     </button>
             </div>
             </div>
         ) : (
-            <div className='fixed bottom-0 left-0 w-full h-[100px] bg-white border-t border-gray-200 py-4'>
-        <div className='flex flex-col items-center'>
-            <p className='text-xs font-bold text-purple-600 tracking-wider'>
+            <div className='fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 py-2 sm:py-3 md:py-4'>
+        <div className='flex flex-col items-center px-2 sm:px-4 md:px-6'>
+            <p className='text-[10px] sm:text-xs md:text-xs font-bold text-purple-600 tracking-wider'>
                 SCREEN THIS WAY
             </p>
-            <div className='flex gap-4 text-xs mt-3 '>
+            <div className='flex flex-wrap gap-2 sm:gap-3 md:gap-4 text-[10px] sm:text-xs mt-2 sm:mt-3 justify-center'>
                 <div className='flex items-center gap-1'>
-                    <div className='w-3 h-3 border rounded-[4px]'></div>
-                    Available
+                    <div className='w-2 h-2 sm:w-3 sm:h-3 border rounded-[4px]'></div>
+                    <span>Available</span>
                 </div>
                 <div className='flex items-center gap-1'>
-                        <div className='w-3 h-3 border rounded-[4px] bg-gray-200 flex items-center justify-center'>
-                            <small>x</small>
+                        <div className='w-2 h-2 sm:w-3 sm:h-3 border rounded-[4px] bg-gray-200 flex items-center justify-center'>
+                            <small className='text-[8px] sm:text-[10px]'>x</small>
                         </div>
-                        Occupied
+                        <span>Occupied</span>
                 </div>
                 <div className='flex items-center gap-1'>
-                    <div className='w-3 h-3 bg-purple-600 rounded-[4px]'></div>
-                    Selected
+                    <div className='w-2 h-2 sm:w-3 sm:h-3 bg-purple-600 rounded-[4px]'></div>
+                    <span>Selected</span>
                 </div>
             </div>
         </div>

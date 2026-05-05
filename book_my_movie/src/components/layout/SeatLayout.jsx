@@ -12,13 +12,13 @@ const Seat = ({ seat, row, onClick, selectedSeats, lockedSeats }) => {
     const isSelected = selectedSeats.includes(seatId);
     return (
         <button
-            className={`w-9 h-9 m-[2px] rounded-lg border text-sm
+            className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 m-1 sm:m-1.5 md:m-[2px] rounded-lg border text-xs sm:text-sm
         ${seat.status === "occupied"
                     ? "bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed"
                     : isLocked
                         ? "bg-gray-200 border-gray-300 text-gray-400 cursor-not-allowed"
                         : isSelected
-                            ? "bg-[#6e52fa] text-white border-[#cec4f7] border-3 cursor-pointer"
+                            ? "bg-[#6e52fa] text-white border-[#cec4f7] border-2 sm:border-3 cursor-pointer"
                             : "hover:bg-gray-100 border-black cursor-pointer"
                 }`}
             disabled={seat.status === "occupied" || isLocked}
@@ -60,6 +60,12 @@ export default function SeatLayout({ showData, showId }) {
             if(incommingShowId !== showId) return;
             setLockedSeats((prev) => prev.filter((id) => !seatIds.includes(id)));
         })
+        socket.on("seats-booked", ({seatIds, showId: incommingShowId})=>{
+            if(incommingShowId !== showId) return;
+            // Permanently lock the booked seats
+            setLockedSeats((prev) => [...new Set([...prev, ...seatIds])]);
+            console.log("Seats permanently booked:", seatIds);
+        })
         socket.on("seat-locked-failed",({showId,
             requested: seatIds,
             alreadyLocked }) =>{
@@ -79,13 +85,13 @@ export default function SeatLayout({ showData, showId }) {
     // socket code ends here
 
     return (
-        <div className="max-w-7xl mx-auto mt-[10px] px-6 pb-4 bg-white h-[calc(100vh-320px)] overflow-y-scroll">
+        <div className="max-w-7xl mx-auto mt-2 sm:mt-3 md:mt-[10px] px-2 sm:px-4 md:px-6 pb-28 sm:pb-32 bg-white min-h-screen">
 
             <div className="flex flex-col items-center justify-center">
 
                 {showData?.seatLayout && (
 
-                    <div className="flex flex-col items-center">
+                    <div className="flex flex-col items-center w-full">
 
                         {Object.entries(
                             showData.seatLayout.reduce((acc, curr) => {
@@ -101,9 +107,9 @@ export default function SeatLayout({ showData, showId }) {
                             }, {})
                         ).map(([type, { price, rows }]) => (
 
-                            <div key={type} className="mb-12 w-full flex flex-col items-center justify-center">
+                            <div key={type} className="mb-6 sm:mb-8 md:mb-12 w-full flex flex-col items-center justify-center">
 
-                                <h2 className="text-center font-semibold text-lg mb-4">
+                                <h2 className="text-center font-semibold text-sm sm:text-base md:text-lg mb-3 sm:mb-4">
                                     {type} : ₹{price}
                                 </h2>
 
@@ -113,11 +119,11 @@ export default function SeatLayout({ showData, showId }) {
 
                                         <div key={rowObj.row} className="flex items-center">
 
-                                            <div className="w-6 text-right mr-2 text-sm text-gray-600">
+                                            <div className="w-4 sm:w-5 md:w-6 text-right mr-1 sm:mr-2 text-xs sm:text-sm text-gray-600 flex-shrink-0">
                                                 {rowObj.row}
                                             </div>
 
-                                            <div className="flex flex-wrap gap-1">
+                                            <div className="flex flex-wrap gap-0.5 sm:gap-1">
 
                                                 {rowObj.seats.map((seat, i) => (
                                                     <Seat
@@ -147,13 +153,13 @@ export default function SeatLayout({ showData, showId }) {
                 )}
 
             </div>
-            <div className="flex justify-center mt-5">
+            <div className="flex justify-center mt-4 sm:mt-6 md:mt-8 px-2">
                 <Image
                     src={screen}
                     alt="Screen"
                     width={700}
                     height={100}
-
+                    className='w-full max-w-xs sm:max-w-sm md:max-w-2xl h-auto'
                 />
             </div>
 

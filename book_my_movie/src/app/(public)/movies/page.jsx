@@ -1,4 +1,3 @@
-import Header from '@/components/layout/Header'
 import MovieFilters from '@/components/movie/MovieFilters'
 import MovieList from '@/components/movie/MovieList'
 import MovieSlider from '@/components/movie/MovieSlider'

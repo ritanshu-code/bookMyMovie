@@ -35,8 +35,8 @@ export default function MovieSlider() {
     }, [api])
 
     return (
-        <div className="">
-            <div className="w-full overflow-hidden  text-black">
+        <div className="w-full">
+            <div className="w-full overflow-hidden text-black px-2 sm:px-4 md:px-0">
 
                 <Carousel
                     setApi={setApi}
@@ -57,20 +57,20 @@ export default function MovieSlider() {
                             <CarouselItem
                                 key={index}
                                 className="
-                pl-4
-                basis-[90%]
+                pl-2 sm:pl-3 md:pl-4
+                basis-[95%] sm:basis-[90%]
                 md:basis-[65%]
                 lg:basis-[70%]
               "
                             >
-                                <div className="relative   rounded-xl">
+                                <div className="relative rounded-xl">
                                     <Image
                                         src={banner}
                                         alt={`banner-${index}`}
                                         width={1240}
                                         height={300}
                                         priority={index === 0}
-                                        className="object-cover rounded-2xl"
+                                        className="object-cover rounded-lg sm:rounded-xl lg:rounded-2xl w-full h-auto"
                                     />
                                 </div>
                             </CarouselItem>
@@ -78,15 +78,15 @@ export default function MovieSlider() {
                     </CarouselContent>
                 </Carousel>
 
-                <div className="flex justify-center gap-4 mt-4">
+                <div className="flex justify-center gap-2 sm:gap-3 mt-3 sm:mt-4">
                     {banners.map((_, index) => (
                         <button
                             key={index}
                             onClick={() => api?.scrollTo(index)}
-                            className={`h-2 rounded-full transition-all 
+                            className={`h-1.5 sm:h-2 rounded-full transition-all 
                                 ${current === index
-                                    ? "w-2 bg-neutral-800 "
-                                    : "w-2 bg-neutral-400"
+                                    ? "w-2 sm:w-2.5 bg-neutral-800 "
+                                    : "w-1.5 sm:w-2 bg-neutral-400"
                                 }`}
                         />
                     ))}

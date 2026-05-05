@@ -2,6 +2,32 @@ import redis from "../utils/redis.js";
 import { Socket, Server } from "socket.io";
 
 export const registerSocketHandlers = (socket, io) => {
+    // BOOKING CONFIRMED - PERMANENTLY LOCK BOOKED SEATS
+    // triggered when a booking is confirmed by the backend API
+    socket.on("booking-confirmed", async({showId, seatIds, userId})=>{
+        if(!showId || !seatIds || !userId) return
+
+        const lockedSeatsKey = `locked-seats:${showId}`;
+
+        console.log(`Permanently locking ${seatIds.length} seats for booking by user ${userId}`);
+        
+        // Lock all seats with permanent marker "BOOKED" (no TTL)
+        for(const seatId of seatIds){
+            const seatLockKey = `seat-lock:${showId}:${seatId}`;
+            // Store with value "BOOKED" and NO TTL - permanent until booking cancelled
+            await redis.set(seatLockKey, "BOOKED");
+            await redis.sadd(lockedSeatsKey, seatId);
+        }
+
+        // Broadcast to all clients in the show that these seats are now permanently locked
+        io.to(showId).emit("seats-booked", {
+            showId,
+            seatIds,
+            userId
+        });
+        console.log(`Permanently locked seats:`, seatIds);
+    })
+    
     // USER JOINS A SHOW ROOM
     // when a user opens the seat layout page we send all the currently locked seats 
     socket.on("join-show", async({showId})=>{
@@ -18,8 +44,9 @@ export const registerSocketHandlers = (socket, io) => {
 
         for(const seatId of lockedSeats){
             const LockKey = `seat-lock:${showId}:${seatId}`;
-            const exists = await redis.exists(LockKey);
-            if(exists){
+            const lockValue = await redis.get(LockKey);
+            
+            if(lockValue){
                 activeLockedSeats.push(seatId);
             } else {
                 // if lock doesn't exist it means ttl expired but seatId is still in locked-seats set

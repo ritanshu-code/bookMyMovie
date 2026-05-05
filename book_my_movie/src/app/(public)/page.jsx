@@ -41,10 +41,11 @@ export default function Page() {
         return <FullScreenLoader />;
     }
     return (
-        <div className='min-h-screen  '>
-                        
+        <div className='min-h-screen'>
             <MovieSlider />
-            <RecommendedMovies movies={movies} />
+            <div className='px-4 md:px-6 lg:px-0'>
+                <RecommendedMovies movies={movies} />
+            </div>
             <LiveEvents/>
         </div>
     )

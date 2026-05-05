@@ -238,43 +238,44 @@ export default function checkOutPage() {
     <div className="min-h-screen w-full bg-white">
       <CheckoutHeader />
 
-      <div className="max-w-6xl mx-auto px-4 py-6">
-        <p className="text-red-500 text-center mb-3 text-lg border rounded-[14px] border-dashed py-2 font-semibold">
+      <div className="max-w-6xl mx-auto px-2 sm:px-4 md:px-6 py-4 sm:py-6">
+        <p className="text-red-500 text-center mb-2 sm:mb-3 text-xs sm:text-sm md:text-base border rounded-[14px] border-dashed py-2 font-semibold">
           Time left to complete booking: {Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, "0")}
         </p>
-        <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 md:gap-6">
 
           {/* Left Section */}
-          <div className="flex-1 space-y-4">
+          <div className="flex-1 space-y-3 sm:space-y-4">
 
             {/* Movie Details */}
-            <div className="flex gap-4">
+            <div className="flex gap-2 sm:gap-3 md:gap-4">
               <Image
                 src={`${IMAGE_BASE}${showData?.movie.poster_path}`}
                 alt={showData?.movie.poster_path
                 }
-                width={100}
-                height={150}
+                width={80}
+                height={120}
+                className='w-16 sm:w-20 md:w-24 h-auto rounded-lg'
               />
 
-              <div>
-                <h3 className="font-semibold text-lg">
+              <div className='flex-1 min-w-0'>
+                <h3 className="font-semibold text-sm sm:text-base md:text-lg line-clamp-2">
                   {showData?.movie.title}
                 </h3>
-                <p className="text-sm text-gray-600">
-                  {showData?.movie.certification} •{" "}
-                  {showData?.movie.spoken_languages
+                <p className="text-xs sm:text-sm text-gray-600 line-clamp-1">
+                  {showData?.movie.overview
+} •{" "}
+                  <span className='hidden sm:inline'>{showData?.movie.spoken_languages
                     .join(", ")} •{" "}
-                  {showData?.movie.format}
+                  {showData?.movie.format}</span>
                 </p>
-                <p className="text-sm text-gray-600">
-                  {showData?.theatre?.name}, {showData?.theatre.city},{" "}
-                  {showData?.theatre.state}
+                <p className="text-xs sm:text-sm text-gray-600 line-clamp-1">
+                  {showData?.theatre?.name}, <span className='hidden sm:inline'>{showData?.theatre.city}, {showData?.theatre.state}</span>
                 </p>
               </div>
             </div>
             {/* show details */}
-            <div className="border border-gray-200 rounded-[24px] px-6 py-5">
+            <div className="border border-gray-200 rounded-[24px] px-3 sm:px-4 md:px-6 py-3 sm:py-4 md:py-5">
               <p className="text-md font-medium border-b pb-5 border-gray-200">
                 {dayjs(showData?.date, "DD-MM-YYYY")
                   .format("D MMMM YYYY")
